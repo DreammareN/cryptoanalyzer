@@ -24,7 +24,7 @@ public class AppMenu {
 
         if (!path.equals("exit")) {
             if (operation == 'b') {
-                cipherService.fileBruteForce(path);
+                System.out.println(cipherService.fileBruteForce(path));
             } else {
                 if (operation == '+') {
                     keyFromConsole = menuOptionCheckKey(AppConstants.WRITE_KEY_FOR_ENCRYPT);
@@ -32,7 +32,7 @@ public class AppMenu {
                     keyFromConsole = menuOptionCheckKey(AppConstants.WRITE_KEY_FOR_DECRYPT);
                 }
                 if (!keyFromConsole.equals("exit")) {
-                    cipherService.fileEncryptedDecrypted(path, Integer.parseInt(keyFromConsole), operation);
+                    System.out.println(cipherService.fileEncryptedDecrypted(path, Integer.parseInt(keyFromConsole), operation));
                 }
             }
         }

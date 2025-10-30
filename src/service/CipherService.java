@@ -1,5 +1,7 @@
 package service;
 
+import constants.AppConstants;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +15,9 @@ public class CipherService {
     public String encryptDecrypt(String text, int shift, char operation) {
         String result = "";
         text = text.toLowerCase();
+        if (shift < 0) {
+            shift = (-1 * shift / ALPHABET.size() + 1)* ALPHABET.size() + shift;
+        }
         for (int i = 0; i < text.length(); i++) {
             char oneCharacter = text.charAt(i);
             int numberOfCharacter = ALPHABET.indexOf(oneCharacter);
@@ -25,7 +30,6 @@ public class CipherService {
                 } else {
                     numberOfShift = (ALPHABET.size() + numberOfCharacter - shift) % ALPHABET.size();
                 }
-
                 result += ALPHABET.get(numberOfShift);
             }
 
@@ -38,9 +42,19 @@ public class CipherService {
         return f.isFile();
     }
 
-    public void fileEncryptedDecrypted(String path, int keyCipher, char operation) throws IOException {
+    public String fileEncryptedDecrypted(String path, int keyCipher, char operation) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
-        BufferedWriter bufferedWriter = writeText(path, "_encrypted");
+        BufferedWriter bufferedWriter;
+        String returnText;
+
+        if (operation == '+') {
+            bufferedWriter = writeText(path, AppConstants.FILE_NAME_AFTER_ENCRYPTION);
+            returnText = AppConstants.SUCCESSFUL_OPERATION_ENCRYPTION;
+        } else {
+            bufferedWriter = writeText(path, AppConstants.FILE_NAME_AFTER_DECRYPTION);
+            returnText = AppConstants.SUCCESSFUL_OPERATION_DECRYPTION;
+        }
+
         String textLine;
         CipherService cipherService = new CipherService();
         while ((textLine = bufferedReader.readLine()) != null) {
@@ -49,24 +63,28 @@ public class CipherService {
             } else {
                 bufferedWriter.write(cipherService.encryptDecrypt(textLine, keyCipher, '-'));
             }
+            bufferedWriter.newLine();
         }
         bufferedWriter.close();
         bufferedReader.close();
+        return returnText;
     }
 
 
-    public void fileBruteForce(String path) throws IOException {
+    public String fileBruteForce(String path) throws IOException {
         CipherService cipherService = new CipherService();
         for (int i = 1; i < ALPHABET.size(); i++) {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
-            BufferedWriter bufferedWriter = writeText(path, "_decrypted_" + i);
+            BufferedWriter bufferedWriter = writeText(path, AppConstants.FILE_NAME_AFTER_DECRYPTION + i);
             String textLine;
             while ((textLine = bufferedReader.readLine()) != null) {
                 bufferedWriter.write(cipherService.encryptDecrypt(textLine, i, '-'));
+                bufferedWriter.newLine();
             }
             bufferedWriter.close();
             bufferedReader.close();
         }
+        return AppConstants.SUCCESSFUL_OPERATION_BRUTE_FORCE;
     }
 
     public BufferedWriter writeText (String path, String name) throws IOException {
