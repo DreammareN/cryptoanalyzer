@@ -1,3 +1,5 @@
+import constants.AppConstants;
+import menu.AppMenu;
 import service.CipherService;
 
 import java.io.IOException;
@@ -7,94 +9,38 @@ public class MainApp {
     public static void main(String[] args) throws IOException {
 
         Scanner scan = new Scanner(System.in);
-        String fromConsole, path, keyFromConsole;
-        int keyCipher = 0;
-        CipherService cipherService = new CipherService();
-        System.out.println("Добро пожаловать в cryptoanalyzer!");
+        String fromConsole;
+        AppMenu menu = new AppMenu();
+        System.out.println(AppConstants.GREETING);
 
         while(true) {
-            System.out.println("Что вы хотите сделать?");
-            System.out.println("1. Зашифровать текст");
-            System.out.println("2. Расшифровать текст");
-            System.out.println("3. Произвести расшифровку текста с помощью brute force (перебор всех вариантов)");
-            System.out.println("0. Завершить работу программы");
-            System.out.println("Введите в консоль цифру действия, которое хотите совершить");
+            System.out.println(AppConstants.WHAT_DO_YOU_WANT);
+            System.out.println(AppConstants.OPTION_MENU_ENCRYPT);
+            System.out.println(AppConstants.OPTION_MENU_DECRYPT);
+            System.out.println(AppConstants.OPTION_MENU_BRUTE_FORCE);
+            System.out.println(AppConstants.OPTION_MENU_EXIT);
+            System.out.println(AppConstants.WRITE_YOUR_ACTION);
 
             fromConsole = scan.nextLine();
             switch (fromConsole) {
                 case "1": {
-                    System.out.println("Пожалуйста, введите путь к файлу, который вы хотите зашифровать:");
-                    path = scan.nextLine();
-                    while (!cipherService.checkPathToFile(path) && !path.equals("exit")) {
-                        System.out.println("По указанному пути не удалось найти файл!");
-                        System.out.println("Пожалуйста, введите путь к файлу. Если хотите выйти из этого пункта меню, введите exit:");
-                        path = scan.nextLine();
-                    }
-                    if (!path.equals("exit")) {
-                        System.out.println("Пожалуйста, введите сдвиг по алфавиту (ключ для шифра Цезаря)");
-                        keyFromConsole = scan.nextLine();
-                        while (!keyFromConsole.equals("exit")) {
-                            try {
-                                keyCipher = Integer.parseInt(keyFromConsole);
-                                break;
-                            } catch (NumberFormatException e) {
-                                System.out.println("Введеное вами значение не является числом!");
-                                System.out.println("Пожалуйства, введите сдвиг по алфавиту (ключ для шифра Цезаря). Если хотите выйти из этого пункта меню, введите exit:");
-                            }
-                            keyFromConsole = scan.nextLine();
-                        }
-                        if (!keyFromConsole.equals("exit")) {
-                            cipherService.fileEncryptedDecrypted(path, keyCipher, '+');
-                        }
-                    }
+                    menu.menuOption('+');
                     break;
                 }
                 case "2": {
-                    System.out.println("Пожалуйста, введите путь к файлу, который вы хотите дешифровать:");
-                    path = scan.nextLine();
-                    while (!cipherService.checkPathToFile(path) && !path.equals("exit")) {
-                        System.out.println("По указанному пути не удалось найти файл!");
-                        System.out.println("Пожалуйста, введите путь к файлу. Если хотите выйти из этого пункта меню, введите exit:");
-                        path = scan.nextLine();
-                    }
-                    if (!path.equals("exit")) {
-                        System.out.println("Пожалуйста, введите сдвиг по алфавиту (ключ для дешифровки)");
-                        keyFromConsole = scan.nextLine();
-                        while (!keyFromConsole.equals("exit")) {
-                            try {
-                                keyCipher = Integer.parseInt(keyFromConsole);
-                                break;
-                            } catch (NumberFormatException e) {
-                                System.out.println("Введенное вами значение не является числом!");
-                                System.out.println("Пожалуйста, введите сдвиг по алфавиту (ключ для дешифровки). Если хотите выйти из этого пункта меню, введите exit:");
-                            }
-                            keyFromConsole = scan.nextLine();
-                        }
-                        if (!keyFromConsole.equals("exit")) {
-                            cipherService.fileEncryptedDecrypted(path, keyCipher, '-');
-                        }
-                    }
+                    menu.menuOption('-');
                     break;
                 }
                 case "3": {
-                    System.out.println("Пожалуйста, введите путь к файлу, который вы хотите \"взломать\":");
-                    path = scan.nextLine();
-                    while (!cipherService.checkPathToFile(path) && !path.equals("exit")) {
-                        System.out.println("По указанному пути не удалось найти файл!");
-                        System.out.println("Пожалуйста, введите путь к файлу. Если хотите выйти из этого пункта меню, введите exit:");
-                        path = scan.nextLine();
-                    }
-                    if (!path.equals("exit")) {
-                        cipherService.fileBruteForce(path);
-                    }
+                    menu.menuOption('b');
                     break;
                 }
                 case "0": {
-                    System.out.println("Выход из программы");
+                    menu.menuOptionExit();
                     return;
                 }
                 default: {
-                    System.out.println("Вы ввели значение не из меню. Пожалуйста, введите значение заново. Напоминаем пункты меню");
+                    menu.menuOptionNotFoundOption();
                     break;
                 }
             }
